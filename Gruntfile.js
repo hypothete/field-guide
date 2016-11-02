@@ -59,6 +59,8 @@ module.exports = function(grunt) {
     concat: {
       default: {
       src: [
+        'node_modules/seedrandom/seedrandom.js',
+        'node_modules/fast-simplex-noise/main.js',
         'src/js/**/*.js',
       ],
       dest: 'dist/built.js'
