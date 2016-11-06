@@ -1,42 +1,62 @@
-(function(FG){
+(function(FG, tinycolor){
 
   'use strict';
 
+  var tempRamp = [
+    tinycolor('#ffffff'),
+    tinycolor('#d96feb'),
+    tinycolor('#904ac4'),
+    tinycolor('#301c8d'),
+    tinycolor('#07bbe0'),
+    tinycolor('#00d688'),
+    tinycolor('#60cd0f'),
+    tinycolor('#feff04'),
+    tinycolor('#f87906'),
+    tinycolor('#d32502'),
+    tinycolor('#a00902')
+  ];
+
+  function sampleRamp(temp){
+    //-18 - 38
+    var tempPct = (temp/38)*(tempRamp.length-1);
+    var tempLowIndex = Math.floor(tempPct);
+    var tempHighIndex = Math.round(tempPct);
+    var startCol = tempRamp[tempLowIndex];
+    var endCol = tempRamp[tempHighIndex];
+    return tinycolor.mix(startCol, endCol, 100*(tempPct - tempLowIndex));
+  }
+
   FG.worldMap = {
     terrain: FG.ctx.getImageData(0,0,FG.can.width,FG.can.height),
-    temperature: FG.ctx.getImageData(0,0,FG.can.width,FG.can.height),
     sealevel:80,
     snowline: 128,
     loadTerrain: function(){
+      //red channel = altitude
+      //green = temperature
+
       for(var i=0; i<this.terrain.data.length; i+=4){
         var ix = Math.floor(i/4) % FG.can.width;
         var iy = Math.floor((i/4) / FG.can.width);
         var frag = Math.floor(FG.simplex.in2D(ix, iy));
         frag = frag > this.sealevel ? Math.floor(255*(frag-this.sealevel)/(255-this.sealevel)) : 0;
-        this.terrain.data[i+1]=this.terrain.data[i+2]=this.terrain.data[i] = frag;
+        this.terrain.data[i] = frag;
+
+        if(frag <= this.sealevel){
+          this.terrain.data[i+1] = 12 + 8*frag/this.sealevel;
+        }
+        else if(frag > this.snowline){
+          this.terrain.data[i+1] = 0;
+        }
+        else{
+          this.terrain.data[i+1] = 35*(1-(frag - this.sealevel)/(this.snowline - this.sealevel));
+        }
+
         this.terrain.data[i+3] = 255;
       }
     },
-    loadTemperature: function(){
-      for(var i=0; i<this.temperature.data.length; i+=4){
 
-        var frag = this.terrain.data[i];
-
-        if(frag <= this.sealevel){
-          frag = 12 + 8*frag/this.sealevel;
-        }
-        else if(frag > this.snowline){
-          frag = 0;
-        }
-        else{
-          frag = 35*(1-(frag - this.sealevel)/(this.snowline - this.sealevel));
-        }
-        this.temperature.data[i+1]=this.temperature.data[i+2]=this.temperature.data[i] = frag;
-        this.temperature.data[i+3] = 255;
-      }
-    },
     getTemp: function(vec){
-      return this.temperature.data[Math.floor((vec.x+vec.y*FG.can.width))*4];
+      return this.terrain.data[Math.floor((vec.x+vec.y*FG.can.width))*4 + 1];
     },
     getTerrain: function(vec){
       return this.terrain.data[Math.floor((vec.x+vec.y*FG.can.width))*4];
@@ -88,8 +108,19 @@
       FG.ctx.putImageData(terraincolor,0,0);
     },
     drawTemperature: function(){
-      FG.ctx.putImageData(this.temperature,0,0);
+      FG.ctx.putImageData(this.terrain,0,0);
+      var terraincolor = FG.ctx.getImageData(0,0,FG.can.width,FG.can.height);
+      for(var i=0; i<terraincolor.data.length; i+=4){
+        var ar = this.terrain.data[i+1];
+        var tColor = sampleRamp(ar).toRgb();
+
+        terraincolor.data[i]   = tColor.r;
+        terraincolor.data[i+1] = tColor.g;
+        terraincolor.data[i+2] = tColor.b;
+        terraincolor.data[i+3] = 255;
+      }
+      FG.ctx.putImageData(terraincolor,0,0);
     }
   };
 
-})(window.FG);
+})(window.FG, window.tinycolor);

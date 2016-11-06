@@ -61,6 +61,7 @@ module.exports = function(grunt) {
       src: [
         'node_modules/seedrandom/seedrandom.js',
         'node_modules/fast-simplex-noise/main.js',
+        'src/js/vendor/tinycolor.js',
         'src/js/random.js',
         'src/js/world-map.js',
         'src/js/app.js',

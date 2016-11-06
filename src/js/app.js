@@ -3,9 +3,8 @@
   var out = document.querySelector('#output');
 
   FG.worldMap.loadTerrain();
-  FG.worldMap.loadTemperature();
   FG.worldMap.drawTerrain();
-  //worldMap.drawTemperature();
+  FG.worldMap.drawTemperature();
 
   FG.can.onclick = function(evt){
     var mousePos = getMousePos(evt);
