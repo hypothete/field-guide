@@ -61,7 +61,9 @@ module.exports = function(grunt) {
       src: [
         'node_modules/seedrandom/seedrandom.js',
         'node_modules/fast-simplex-noise/main.js',
-        'src/js/**/*.js',
+        'src/js/random.js',
+        'src/js/world-map.js',
+        'src/js/app.js',
       ],
       dest: 'dist/built.js'
       }
