@@ -96,7 +96,7 @@
         var ar = this.terrain.data[i];
         var ay = Math.cos(Math.PI*1.37*iy/FG.can.height-2)*128+128;
         var ap = this.windSimplex.in2D(ix,iy);
-        this.terrain.data[i+2] = mix(ay,ap,ar/255);
+        this.terrain.data[i+2] = Math.max(mix(ay,ap,ar/255), ar);
       }
 
 

@@ -6,9 +6,9 @@
   var rainbtn = document.querySelector('#rain');
 
   FG.worldMap.loadTerrain();
-  //FG.worldMap.drawTerrain();
+  FG.worldMap.drawTerrain();
   //FG.worldMap.drawTemperature();
-  FG.worldMap.drawRain();
+  //FG.worldMap.drawRain();
 
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();
