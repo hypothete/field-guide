@@ -27,6 +27,7 @@ module.exports = function(grunt) {
           dest: 'dist',
           src: [
             '**/*.{ico,txt,json}',
+            'styles.css',
             'index.html',
             'img/**/*.{gif,svg,png,jpg}'
           ]

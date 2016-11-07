@@ -27,6 +27,8 @@
     var localTemp = FG.worldMap.getTemp(mousePos);
     var localRain = FG.worldMap.getRain(mousePos);
 
+    console.log(mousePos.x, mousePos.y)
+
     logOut('------------------------------');
 
     if(altitude < FG.worldMap.sealevel){

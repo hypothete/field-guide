@@ -16,20 +16,51 @@
     tinycolor('#a00902')
   ];
 
-  function sampleRamp(temp){
+  var biomeRamp = [
+    tinycolor('#314e04'), //rainforest
+    tinycolor('#726d36'), //plains
+    tinycolor('#f5f4b6'), //sand
+    tinycolor('#ba744f')  //dirt
+  ];
+
+  var waterRamp = [
+    tinycolor('#024e7d'),
+    tinycolor('#000a44'),
+    tinycolor('#000033')
+  ];
+
+  function sampleRamp(temp, ramp){
     //-18 - 38
-    var tempPct = (temp/255)*(tempRamp.length-1);
+    var tempPct = (temp/255)*(ramp.length-1);
     var tempLowIndex = Math.floor(tempPct);
-    var tempHighIndex = Math.round(tempPct);
-    var startCol = tempRamp[tempLowIndex];
-    var endCol = tempRamp[tempHighIndex];
-    return tinycolor.mix(startCol, endCol, 100*(tempPct - tempLowIndex));
+    var tempHighIndex = Math.ceil(tempPct);
+    var startCol = ramp[tempLowIndex];
+    var endCol = ramp[tempHighIndex];
+    return tinycolor.mix(startCol, endCol, 100*(tempPct - tempLowIndex)/(tempHighIndex-tempLowIndex));
+  }
+
+  function mix(a,b,x){
+    return(1-x)*a+x*b;
   }
 
   FG.worldMap = {
     terrain: FG.ctx.getImageData(0,0,FG.can.width,FG.can.height),
-    sealevel:80,
+    sealevel:64,
     snowline: 128,
+    terrainSimplex: new FastSimplexNoise({
+      random: FG.seed,
+      frequency: 0.002,
+      min: 0,
+      max: 255,
+      octaves: 6
+    }),
+    windSimplex: new FastSimplexNoise({
+      random: FG.seed,
+      frequency: 0.008,
+      min: 0,
+      max: 255,
+      octaves: 1
+    }),
     loadTerrain: function(){
       //red channel = altitude
       //green = temperature
@@ -38,7 +69,7 @@
       for(i=0; i<this.terrain.data.length; i+=4){
         ix = Math.floor(i/4) % FG.can.width;
         iy = Math.floor((i/4) / FG.can.width);
-        frag = Math.floor(FG.simplex.in2D(ix, iy));
+        frag = Math.floor(this.terrainSimplex.in2D(ix, iy));
 
         //altitude
         frag = frag > this.sealevel ? Math.floor(255*(frag-this.sealevel)/(255-this.sealevel)) : 0;
@@ -59,9 +90,18 @@
       }
 
       //second pass - rain in the blue channel
+      for(i=0; i<this.terrain.data.length; i+=4){
+        ix = Math.floor(i/4) % FG.can.width;
+        iy = Math.floor((i/4) / FG.can.width);
+        var ar = this.terrain.data[i];
+        var ay = Math.cos(Math.PI*1.37*iy/FG.can.height-2)*128+128;
+        var ap = this.windSimplex.in2D(ix,iy);
+        this.terrain.data[i+2] = mix(ay,ap,ar/255);
+      }
+
 
       //just going to blow rain left to right for now
-      for(i=0; i<this.terrain.data.length; i+=4){
+      /*for(i=0; i<this.terrain.data.length; i+=4){
         ix = Math.floor(i/4) % FG.can.width;
         iy = Math.floor((i/4) / FG.can.width);
         var ar = this.terrain.data[i];
@@ -94,13 +134,13 @@
           }
 
           leftRain = Math.round(Math.max(Math.min(255, leftRain), 0));
-
           this.terrain.data[i+2] = leftRain;
+          
         }
         else{
           this.terrain.data[i+2] = 255;
         }
-      }
+      }*/
     },
 
     getTerrain: function(vec){
@@ -125,6 +165,7 @@
         if(ar > this.sealevel){
           var bb = ar /(255 - this.sealevel);
 
+          //shadow
           if(ix > 0 && i > FG.can.width*4){
             var an = this.terrain.data[i-FG.can.width*4];
             var aw = this.terrain.data[i-4];
@@ -135,10 +176,13 @@
               bb *= 0.5;
             }
           }
+          var localTemp = this.terrain.data[i+1];
+          var localRain = this.terrain.data[i+2];
 
-          pr = 224 * bb;
-          pg = 128 * bb;
-          pb = 64 * bb;
+          var ph = sampleRamp(255-localRain, biomeRamp).toRgb();
+          pr = ph.r * bb;
+          pg = ph.g * bb;
+          pb = ph.b * bb;
 
           if(ar > this.snowline){
             pg *= 3;
@@ -150,9 +194,10 @@
 
         }
         else{
-          pr = 16;
-          pg = 0;
-          pb = 128 * ar / this.sealevel;
+          var pw = sampleRamp(255*(1-ar/this.sealevel),waterRamp).toRgb();
+          pr = pw.r;
+          pg = pw.g;
+          pb = pw.b;
         }
         terraincolor.data[i]   = Math.max(0,pr);
         terraincolor.data[i+1] = Math.max(0,pg);
@@ -166,7 +211,7 @@
       var terraincolor = FG.ctx.getImageData(0,0,FG.can.width,FG.can.height);
       for(var i=0; i<terraincolor.data.length; i+=4){
         var ar = this.terrain.data[i+1];
-        var tColor = sampleRamp(ar).toRgb();
+        var tColor = sampleRamp(ar, tempRamp).toRgb();
 
         terraincolor.data[i]   = tColor.r;
         terraincolor.data[i+1] = tColor.g;
