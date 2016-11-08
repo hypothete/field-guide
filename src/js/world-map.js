@@ -96,51 +96,8 @@
         var ar = this.terrain.data[i];
         var ay = Math.cos(Math.PI*1.37*iy/FG.can.height-2)*128+128;
         var ap = this.windSimplex.in2D(ix,iy);
-        this.terrain.data[i+2] = Math.max(mix(ay,ap,ar/255), ar);
+        this.terrain.data[i+2] = Math.max(mix(ay,ap,ar/128), ar);
       }
-
-
-      //just going to blow rain left to right for now
-      /*for(i=0; i<this.terrain.data.length; i+=4){
-        ix = Math.floor(i/4) % FG.can.width;
-        iy = Math.floor((i/4) / FG.can.width);
-        var ar = this.terrain.data[i];
-
-        if(ar > this.sealevel) {
-          var leftRain = 0;
-
-          //reduce by temperature
-          var localTemp = this.terrain.data[i+1];
-          var tempScale = 1-localTemp/255;
-
-          if(ix > 0){
-            var aw = this.terrain.data[i-4];
-            var awr = this.terrain.data[i-4+2];
-
-            if(aw > ar){
-              leftRain = awr-tempScale*Math.random()*8;
-            }
-            else{
-              leftRain = awr-tempScale*Math.random()*2;
-            }
-          }
-
-          else if(iy > 0){ //spread from north neighbor if possible
-            leftRain = this.terrain.data[i-4*FG.can.width+2];
-          }
-
-          else{
-            leftRain = Math.random()*255;
-          }
-
-          leftRain = Math.round(Math.max(Math.min(255, leftRain), 0));
-          this.terrain.data[i+2] = leftRain;
-          
-        }
-        else{
-          this.terrain.data[i+2] = 255;
-        }
-      }*/
     },
 
     getTerrain: function(vec){
