@@ -72,23 +72,23 @@
 				}
 
 				if(pt.rain > opt.rain && pt.rain > 224){
-					entry += 'The air was misty. ';
+					entry += 'The air was thick with mist. ';
 				}
-				else if(pt.rain < opt.rain && pt.rain < 64){
+				else if(pt.rain < opt.rain && pt.rain < 80){
 					entry += 'It was dry as a bone. ';
 				}
 
 				if(pt.temp > opt.temp){
 					entry += 'It felt warmer here. ';
+					if(pt.temp > 160){
+						entry += 'Hot, actually. I wiped my brow. ';
+					}
 				}
 				else {
 					entry += 'It felt cooler here. ';
-				}
-				if(pt.temp === 0){
-					entry += 'I tightened my coat around me. The winds were harsh and frigid. ';
-				}
-				else if(temp > 160){
-					entry += 'The heat was unbearable. I wiped my brow. ';
+					if(pt.temp === 0){
+						entry += 'I tightened my coat around me. The winds were harsh and frigid. ';
+					}
 				}
 
 				FG.log(entry);
