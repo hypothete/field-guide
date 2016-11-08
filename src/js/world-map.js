@@ -135,7 +135,7 @@
           }
           var localTemp = this.terrain.data[i+1];
           var localRain = this.terrain.data[i+2];
-          var moreRain = Math.max(localTemp, localRain);
+          var moreRain = 255*(localTemp+localRain)/512;
           var ph = sampleRamp(moreRain, biomeRamp).toRgb();
           pr = ph.r * bb;
           pg = ph.g * bb;

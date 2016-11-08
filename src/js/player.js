@@ -91,6 +91,16 @@
 					}
 				}
 
+				var biomass = 255*(pt.temp+pt.rain)/512;
+				if(biomass > 160){
+					entry += 'The land was lush with wildlife. ';
+				}
+				else if(biomass > 100){
+					entry += 'Various species enjoyed the temperate climate. ';
+				}
+				else {
+					entry += 'Despite the harsh conditions, life managed to survive. ';
+				}
 				FG.log(entry);
 			}
 		}
