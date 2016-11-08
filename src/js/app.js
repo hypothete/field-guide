@@ -1,6 +1,6 @@
 (function(FG){
   'use strict';
-  var out = document.querySelector('#output');
+  
   var terrainbtn = document.querySelector('#terrain');
   var tempbtn = document.querySelector('#temp');
   var rainbtn = document.querySelector('#rain');
@@ -9,6 +9,13 @@
   FG.worldMap.drawTerrain();
   //FG.worldMap.drawTemperature();
   //FG.worldMap.drawRain();
+
+  FG.player.step(FG.player.position.x, FG.player.position.y);
+  for(var i=0; i<25; i++){
+    FG.player.step();
+  }
+  FG.player.draw();
+  FG.player.log();
 
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();
@@ -27,35 +34,26 @@
     var localTemp = FG.worldMap.getTemp(mousePos);
     var localRain = FG.worldMap.getRain(mousePos);
 
-    console.log(mousePos.x, mousePos.y)
+    FG.log('------------------------------');
 
-    logOut('------------------------------');
+    FG.log(mousePos.x+' '+mousePos.y)
 
     if(altitude < FG.worldMap.sealevel){
-      logOut('sea');
+      FG.log('sea');
     }
     else{
-      logOut('land');
+      FG.log('land');
     }
 
-    logOut('terrain: '+altitude);
+    FG.log('terrain: '+altitude);
 
-    logOut('temperature: '+localTemp);
+    FG.log('temperature: '+localTemp);
 
-    logOut('rain: '+localRain);
+    FG.log('rain: '+localRain);
   };
 
   function prependChild(parent, newChild) {
     parent.insertBefore(newChild, parent.firstChild);
-  }
-
-  function logOut(outTxt){
-    var ppp = document.createElement('p');
-    ppp.textContent = outTxt;
-    prependChild(out, ppp);
-    if(out.children.length > 10){
-      out.removeChild(out.lastChild);
-    }
   }
 
   function getMousePos(e) {

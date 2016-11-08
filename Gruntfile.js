@@ -65,6 +65,7 @@ module.exports = function(grunt) {
         'src/js/vendor/tinycolor.js',
         'src/js/random.js',
         'src/js/world-map.js',
+        'src/js/player.js',
         'src/js/app.js',
       ],
       dest: 'dist/built.js'

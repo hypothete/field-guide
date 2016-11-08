@@ -17,10 +17,10 @@
   ];
 
   var biomeRamp = [
-    tinycolor('#314e04'), //rainforest
-    tinycolor('#726d36'), //plains
+    tinycolor('#ba744f'), //dirt
     tinycolor('#f5f4b6'), //sand
-    tinycolor('#ba744f')  //dirt
+    tinycolor('#726d36'), //plains
+    tinycolor('#314e04') //rainforest
   ];
 
   var waterRamp = [
@@ -135,8 +135,8 @@
           }
           var localTemp = this.terrain.data[i+1];
           var localRain = this.terrain.data[i+2];
-
-          var ph = sampleRamp(255-localRain, biomeRamp).toRgb();
+          var moreRain = Math.max(localTemp, localRain);
+          var ph = sampleRamp(moreRain, biomeRamp).toRgb();
           pr = ph.r * bb;
           pg = ph.g * bb;
           pb = ph.b * bb;
