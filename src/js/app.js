@@ -4,7 +4,7 @@
   var terrainbtn = document.querySelector('#terrain');
   var tempbtn = document.querySelector('#temp');
   var rainbtn = document.querySelector('#rain');
-  var pathbtn = document.querySelector('#rain');
+  var pathbtn = document.querySelector('#path');
 
   FG.worldMap.loadTerrain();
   FG.worldMap.drawTerrain();
