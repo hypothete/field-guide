@@ -7,39 +7,24 @@
 			y:256,
 			z:0
 		},
-		rotation: Math.random()*Math.PI*2,
 		stepSize: 32,
 		path:[
 		],
-		step: function(nx,ny){
-			if(nx>=0 && ny>=0){
-				this.position.x = nx;
-				this.position.y = ny;
-			}
-			else {
-				
-				var valid = false;
-				while(!valid){
-					var dir = this.rotation+Math.sin(Math.random()*Math.PI*2);
-					this.rotation = dir;
-					var dx = Math.round(this.stepSize*Math.sin(dir) + this.position.x);
-					var dy = Math.round(this.stepSize*Math.cos(dir) + this.position.y);
-					var ar = FG.worldMap.getTerrain({x: dx, y: dy}) > FG.worldMap.sealevel;
-					if(dx >= 0 && dx < FG.can.width && dy >=0 && dy < FG.can.height && ar){
-						valid = true;
-						this.position.x = dx;
-						this.position.y = dy;
-					}
-				}
-			}
-			var newpos = {
-				temp: FG.worldMap.getTemp(this.position),
-				z: FG.worldMap.getTerrain(this.position),
-				rain: FG.worldMap.getRain(this.position),
-				x: this.position.x,
-				y: this.position.y
-			};
-			this.path.push(newpos);
+		place: function(){
+			var randPtIndex = Math.round(Math.random()*FG.worldMap.points.length);
+			var randPt = FG.worldMap.points[randPtIndex];
+			FG.player.position.x = randPt.x;
+			FG.player.position.y = randPt.y;
+			randPt.visited = true;
+			FG.player.path.push(randPt);
+		},
+		step: function(){
+			var unPts = FG.worldMap.getUnvisitedPoints();
+			var nextPt = FG.worldMap.findClosest(this.position, unPts);
+			this.position.x = nextPt.x;
+			this.position.y = nextPt.y;
+			nextPt.visited = true;
+			this.path.push(nextPt);
 		},
 		draw: function(){
 			FG.ctx.beginPath();

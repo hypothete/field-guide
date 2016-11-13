@@ -4,30 +4,37 @@
   var terrainbtn = document.querySelector('#terrain');
   var tempbtn = document.querySelector('#temp');
   var rainbtn = document.querySelector('#rain');
+  var pathbtn = document.querySelector('#rain');
 
   FG.worldMap.loadTerrain();
   FG.worldMap.drawTerrain();
   //FG.worldMap.drawTemperature();
   //FG.worldMap.drawRain();
 
-  FG.player.step(FG.player.position.x, FG.player.position.y);
+  FG.worldMap.loadPoints();
+  FG.worldMap.drawPoints();
+
+  FG.player.place();
   for(var i=0; i<30; i++){
     FG.player.step();
   }
   FG.player.draw();
   FG.player.log();
 
-  FG.worldMap.loadPoints();
-  FG.worldMap.drawPoints();
-
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();
   };
+  
   tempbtn.onclick = function(){
     FG.worldMap.drawTemperature();
   };
+
   rainbtn.onclick = function(){
     FG.worldMap.drawRain();
+  };
+
+  pathbtn.onclick = function(){
+    FG.worldMap.drawPoints();
   };
 
   FG.can.onclick = function(evt){

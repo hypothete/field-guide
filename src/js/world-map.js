@@ -49,36 +49,6 @@
     return du*du + dv*dv;
   }
 
-  function findClosest(pt, pts){
-    var closest;
-    var closeDist = Infinity;
-    for(var pi in pts){
-      var qt = pts[pi];
-      var qdist = distSq(pt, qt);
-      if(qdist < closeDist){
-        closest = qt;
-        closeDist = qdist;
-      }
-    }
-    return closest;
-  }
-
-  function samplePoints(pts, candidates, w, h){
-    var farthest, farDist = 0;
-    for(var i=0; i<candidates; i++){
-      var randPt = {
-        x: Math.round(Math.random()*w),
-        y: Math.round(Math.random()*h)
-      };
-      var cDist = distSq(findClosest(randPt, pts),randPt);
-      if(cDist > farDist){
-        farDist = cDist;
-        farthest = randPt;
-      }
-    }
-    return farthest;
-  }
-
   FG.worldMap = {
     terrain: FG.ctx.getImageData(0,0,FG.can.width,FG.can.height),
     sealevel:64,
@@ -137,18 +107,63 @@
       }
     },
 
+    findClosest: function(pt, pts){
+      var closest;
+      var closeDist = Infinity;
+      for(var pi in pts){
+        var qt = pts[pi];
+        var qdist = distSq(pt, qt);
+        if(qdist < closeDist){
+          closest = qt;
+          closeDist = qdist;
+        }
+      }
+      return closest;
+    },
+
+    samplePoints: function(pts, candidates, w, h){
+      var farthest, farDist = 0;
+      for(var i=0; i<candidates; i++){
+        var randPt = {
+          x: Math.round(Math.random()*w),
+          y: Math.round(Math.random()*h)
+        };
+        var cDist = distSq(this.findClosest(randPt, pts),randPt);
+        if(cDist > farDist){
+          farDist = cDist;
+          farthest = randPt;
+        }
+      }
+      return farthest;
+    },
+
     loadPoints: function(){
       var candidates = 10;
       var count = 200;
       this.points.push({ x: Math.round(Math.random()*FG.can.width), y: Math.round(Math.random()*FG.can.height)});
       while(this.points.length < count){
-        var sample = samplePoints(this.points, candidates, FG.can.width, FG.can.height);
+        var sample = this.samplePoints(this.points, candidates, FG.can.width, FG.can.height);
         var sampleOnLand = this.getTerrain(sample);
         if(sampleOnLand > this.sealevel){
+          sample.temp = FG.worldMap.getTemp(sample);
+          sample.z = FG.worldMap.getTerrain(sample);
+          sample.rain = FG.worldMap.getRain(sample);
+          sample.visited = false;
           this.points.push(sample);
         }
       }
       this.points.shift();
+    },
+
+    getUnvisitedPoints: function(){
+      var unPts = [];
+      for(var i=0; i<this.points.length; i++){
+        var ptI = this.points[i];
+        if(!ptI.visited){
+          unPts.push(ptI);
+        }
+      }
+      return unPts;
     },
 
     getTerrain: function(vec){
