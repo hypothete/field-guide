@@ -24,7 +24,7 @@
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();
   };
-  
+
   tempbtn.onclick = function(){
     FG.worldMap.drawTemperature();
   };
@@ -35,6 +35,7 @@
 
   pathbtn.onclick = function(){
     FG.worldMap.drawPoints();
+    FG.player.draw();
   };
 
   FG.can.onclick = function(evt){
