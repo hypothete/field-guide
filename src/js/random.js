@@ -4,7 +4,7 @@ window.FG = window.FG || {};
 
   'use strict';
   var out = document.querySelector('#output');
-  FG.seed = new Math.seedrandom('qzzxzx');
+  FG.seed = new Math.seedrandom('asdf');
   FG.can = document.querySelector('canvas');
   FG.ctx = FG.can.getContext('2d');
   FG.can.width = FG.can.height = 512;

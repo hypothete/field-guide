@@ -11,11 +11,14 @@
   //FG.worldMap.drawRain();
 
   FG.player.step(FG.player.position.x, FG.player.position.y);
-  for(var i=0; i<25; i++){
+  for(var i=0; i<30; i++){
     FG.player.step();
   }
   FG.player.draw();
   FG.player.log();
+
+  FG.worldMap.loadPoints();
+  FG.worldMap.drawPoints();
 
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();

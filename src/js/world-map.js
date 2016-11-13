@@ -20,7 +20,7 @@
     tinycolor('#ba744f'), //dirt
     tinycolor('#f5f4b6'), //sand
     tinycolor('#726d36'), //plains
-    tinycolor('#314e04') //rainforest
+    tinycolor('#137700') //rainforest
   ];
 
   var waterRamp = [
@@ -43,6 +43,42 @@
     return(1-x)*a+x*b;
   }
 
+  function distSq(u,v){
+    var du = v.x - u.x;
+    var dv = v.y - u.y;
+    return du*du + dv*dv;
+  }
+
+  function findClosest(pt, pts){
+    var closest;
+    var closeDist = Infinity;
+    for(var pi in pts){
+      var qt = pts[pi];
+      var qdist = distSq(pt, qt);
+      if(qdist < closeDist){
+        closest = qt;
+        closeDist = qdist;
+      }
+    }
+    return closest;
+  }
+
+  function samplePoints(pts, candidates, w, h){
+    var farthest, farDist = 0;
+    for(var i=0; i<candidates; i++){
+      var randPt = {
+        x: Math.round(Math.random()*w),
+        y: Math.round(Math.random()*h)
+      };
+      var cDist = distSq(findClosest(randPt, pts),randPt);
+      if(cDist > farDist){
+        farDist = cDist;
+        farthest = randPt;
+      }
+    }
+    return farthest;
+  }
+
   FG.worldMap = {
     terrain: FG.ctx.getImageData(0,0,FG.can.width,FG.can.height),
     sealevel:64,
@@ -61,6 +97,7 @@
       max: 255,
       octaves: 1
     }),
+    points: [],
     loadTerrain: function(){
       //red channel = altitude
       //green = temperature
@@ -100,6 +137,20 @@
       }
     },
 
+    loadPoints: function(){
+      var candidates = 10;
+      var count = 200;
+      this.points.push({ x: Math.round(Math.random()*FG.can.width), y: Math.round(Math.random()*FG.can.height)});
+      while(this.points.length < count){
+        var sample = samplePoints(this.points, candidates, FG.can.width, FG.can.height);
+        var sampleOnLand = this.getTerrain(sample);
+        if(sampleOnLand > this.sealevel){
+          this.points.push(sample);
+        }
+      }
+      this.points.shift();
+    },
+
     getTerrain: function(vec){
       return this.terrain.data[Math.floor((vec.x+vec.y*FG.can.width))*4];
     },
@@ -135,7 +186,7 @@
           }
           var localTemp = this.terrain.data[i+1];
           var localRain = this.terrain.data[i+2];
-          var moreRain = 255*(localTemp+localRain)/512;
+          var moreRain = 255*(localTemp+localRain)/384;
           var ph = sampleRamp(moreRain, biomeRamp).toRgb();
           pr = ph.r * bb;
           pg = ph.g * bb;
@@ -189,6 +240,14 @@
         terraincolor.data[i+3] = 255;
       }
       FG.ctx.putImageData(terraincolor,0,0);
+    },
+    drawPoints: function(){
+      FG.ctx.fillStyle = '#ffff00';
+      for(var i=0; i<this.points.length; i++){
+        FG.ctx.beginPath();
+        FG.ctx.arc(this.points[i].x, this.points[i].y, 2, 0, Math.PI*2, false);
+        FG.ctx.fill();
+      }
     }
   };
 

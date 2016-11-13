@@ -56,7 +56,7 @@
 			for(var i=1; i<this.path.length; i++){
 				var pt = this.path[i];
 				var opt = this.path[i-1];
-				var entry = '';
+				var entry = 'Day ' + i + ': ';
 
 				if(pt.z > opt.z){
 					entry += 'I walked uphill. ';
