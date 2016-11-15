@@ -33,6 +33,8 @@
 				FG.ctx.lineTo(pt.x,pt.y);
 				circ(pt.x,pt.y,4);
 				FG.ctx.moveTo(pt.x,pt.y);
+				FG.ctx.font = '10px monospace';
+				FG.ctx.fillText(pt.name, pt.x-4, pt.y-5);
 			}
 			FG.ctx.strokeStyle = 'red';
 			FG.ctx.stroke();
@@ -42,24 +44,10 @@
 				var pt = this.path[i];
 				var opt = this.path[i-1];
 				var entry = [];
-				entry.push('Day ' + i + ': ');
+				entry.push('Day ' + i);
 
-				if(pt.z > opt.z){
-					if(pt.z > opt.z+4){
-						entry.push('I walked up a steep hill. ');
-					}
-					else{
-						entry.push('I walked uphill. ');
-					}
-				}
-				else if(pt.z < opt.z){
-					if(pt.z < opt.z-4){
-						entry.push('I walked down a steep hill. ');
-					}
-					else{
-						entry.push('I walked downhill. ');
-					}
-				}
+				entry.push('I walked '+FG.pick(FG.prepositions)+' a '+pt.name.toLowerCase()+'. ');
+
 				if(pt.z > FG.worldMap.snowline){
 					entry.push('The air was thin, but I could see for miles. ');
 				}

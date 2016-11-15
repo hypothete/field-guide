@@ -149,10 +149,46 @@
           sample.z = FG.worldMap.getTerrain(sample);
           sample.rain = FG.worldMap.getRain(sample);
           sample.visited = false;
+
+          sample.name = this.getName(sample);
+
           this.points.push(sample);
         }
       }
       this.points.shift();
+    },
+
+    getName: function(pt){
+      var namepool = [];
+
+      if(pt.z > FG.worldMap.snowline/2){
+        namepool = namepool.concat(FG.landforms['Erosion']);
+      }
+      else if(pt.z < FG.worldMap.sealevel + 8){
+        namepool = namepool.concat(FG.landforms['Coastal']);
+        namepool = namepool.concat(FG.landforms['Lacustrine']);
+      }
+      else{
+        namepool = namepool.concat(FG.landforms['Slope']);
+      }
+
+      if(pt.rain > 224){
+        namepool = namepool.concat(FG.landforms['Fluvial']);
+      }
+      else if(pt.rain < 80){
+        namepool = namepool.concat(FG.landforms['Aeolian']);
+      }
+
+
+      if(pt.temp > 160){
+        namepool = namepool.concat(FG.landforms['Volcanic']);
+      }
+
+      else if(pt.temp < 10){
+        namepool = namepool.concat(FG.landforms['Cryogenic']);
+      }
+
+      return namepool[Math.round(Math.random()*namepool.length)];
     },
 
     getUnvisitedPoints: function(){

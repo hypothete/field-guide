@@ -32,4 +32,8 @@ window.FG = window.FG || {};
     });
   };
 
+  FG.pick = function(list){
+    return list[Math.round(Math.random()*list.length)];
+  };
+
 })(window.FG, window.FastSimplexNoise);

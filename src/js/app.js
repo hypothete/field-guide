@@ -6,12 +6,16 @@
   var rainbtn = document.querySelector('#rain');
   var pathbtn = document.querySelector('#path');
 
-  Promise.all([FG.json('js/landforms.json'),FG.json('js/vendor/xkcd.json')])
+  Promise.all([
+    FG.json('js/landforms.json'),
+    FG.json('js/vendor/xkcd.json'),
+    FG.json('js/prepositions.json')
+    ])
   .then(function(agg){
-    FG.lists = FG.lists || {};
-    FG.lists.landforms = agg[0];
-    FG.lists.colors = agg[1];
-    console.log(FG.lists);
+    FG.landforms = agg[0];
+    FG.colors = agg[1].colors;
+    FG.prepositions = agg[2];
+    console.log(FG.landforms);
 
     FG.worldMap.loadTerrain();
     FG.worldMap.drawTerrain();

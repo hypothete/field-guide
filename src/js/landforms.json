@@ -26,7 +26,7 @@
     "Solifluction sheet",
     "Thermokarst"
   ],
-  "Coastal and oceanic":[
+  "Coastal":[
     "Abyssal fan",
     "Abyssal plain",
     "Archipelago",
@@ -244,7 +244,7 @@
     "Proglacial lake",
     "Salt pan (salt flat)"
   ],
-  "Mountain and glacial":
+  "Mountain":
   [
     "Arête",
     "Cirque",
