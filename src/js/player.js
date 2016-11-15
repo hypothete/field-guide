@@ -41,50 +41,63 @@
 			for(var i=1; i<this.path.length; i++){
 				var pt = this.path[i];
 				var opt = this.path[i-1];
-				var entry = 'Day ' + i + ': ';
+				var entry = [];
+				entry.push('Day ' + i + ': ');
 
 				if(pt.z > opt.z){
-					entry += 'I walked uphill. ';
+					if(pt.z > opt.z+4){
+						entry.push('I walked up a steep hill. ');
+					}
+					else{
+						entry.push('I walked uphill. ');
+					}
 				}
-				else {
-					entry += 'I walked downhill. ';
+				else if(pt.z < opt.z){
+					if(pt.z < opt.z-4){
+						entry.push('I walked down a steep hill. ');
+					}
+					else{
+						entry.push('I walked downhill. ');
+					}
 				}
 				if(pt.z > FG.worldMap.snowline){
-					entry += 'The air was thin, but I could see for miles. ';
+					entry.push('The air was thin, but I could see for miles. ');
 				}
-				else if(pt.z < FG.worldMap.sealevel + 2){
-					entry += 'I could see the water. ';
+				else if(pt.z < FG.worldMap.sealevel + 8){
+					entry.push('I could see water nearby. ');
 				}
 
 				if(pt.rain > opt.rain && pt.rain > 224){
-					entry += 'The air was thick with mist. ';
+					entry.push('The air was thick with mist. ');
 				}
 				else if(pt.rain < opt.rain && pt.rain < 80){
-					entry += 'It was dry as a bone. ';
+					entry.push('It was dry as a bone. ');
 				}
 
 				if(pt.temp > opt.temp){
-					entry += 'It felt warmer here. ';
+					entry.push('It felt warmer here. ');
 					if(pt.temp > 160){
-						entry += 'Hot, actually. I wiped my brow. ';
+						entry.push('Hot, actually. I wiped my brow. ');
 					}
 				}
 				else {
-					entry += 'It felt cooler here. ';
+					
+					entry.push('It felt cooler here. ')
+					;
 					if(pt.temp === 0){
-						entry += 'I tightened my coat around me. The winds were harsh and frigid. ';
+						entry.push('I tightened my coat around me. The winds were harsh and frigid. ');
 					}
 				}
 
 				var biomass = 255*(pt.temp+pt.rain)/512;
 				if(biomass > 160){
-					entry += 'The land was lush with wildlife. ';
+					entry.push('The land was lush with plant life. ');
 				}
 				else if(biomass > 100){
-					entry += 'Various species enjoyed the temperate climate. ';
+					entry.push('Various species enjoyed the temperate climate. ');
 				}
 				else {
-					entry += 'Despite the harsh conditions, life managed to survive. ';
+					entry.push('Despite the harsh conditions, life managed to survive. ');
 				}
 				FG.log(entry);
 			}

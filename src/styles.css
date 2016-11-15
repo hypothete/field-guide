@@ -1,6 +1,15 @@
 body {
 	display: flex;
-	flex-direction: row;
-	align-items:flex-start;
-	justify-content:flext-start;	
+	flex-direction: column;
+	align-items:center;
+	justify-content:flex-start;
+}
+
+#output {
+	margin-top: 2em;
+	max-width:80vw;
+}
+
+.entry {
+	margin-bottom: 1.5em;
 }

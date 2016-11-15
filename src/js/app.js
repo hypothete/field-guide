@@ -6,20 +6,28 @@
   var rainbtn = document.querySelector('#rain');
   var pathbtn = document.querySelector('#path');
 
-  FG.worldMap.loadTerrain();
-  FG.worldMap.drawTerrain();
-  //FG.worldMap.drawTemperature();
-  //FG.worldMap.drawRain();
+  Promise.all([FG.json('js/landforms.json'),FG.json('js/vendor/xkcd.json')])
+  .then(function(agg){
+    FG.lists = FG.lists || {};
+    FG.lists.landforms = agg[0];
+    FG.lists.colors = agg[1];
+    console.log(FG.lists);
 
-  FG.worldMap.loadPoints();
-  FG.worldMap.drawPoints();
+    FG.worldMap.loadTerrain();
+    FG.worldMap.drawTerrain();
+    //FG.worldMap.drawTemperature();
+    //FG.worldMap.drawRain();
 
-  FG.player.place();
-  for(var i=0; i<30; i++){
-    FG.player.step();
-  }
-  FG.player.draw();
-  FG.player.log();
+    FG.worldMap.loadPoints();
+    FG.worldMap.drawPoints();
+
+    FG.player.place();
+    for(var i=0; i<30; i++){
+      FG.player.step();
+    }
+    FG.player.draw();
+    FG.player.log();
+  });
 
   terrainbtn.onclick = function(){
     FG.worldMap.drawTerrain();
@@ -45,22 +53,26 @@
     var localTemp = FG.worldMap.getTemp(mousePos);
     var localRain = FG.worldMap.getRain(mousePos);
 
-    FG.log('------------------------------');
+    var entrylines = [];
 
-    FG.log(mousePos.x+' '+mousePos.y)
+    entrylines.push('------------------------------');
+
+    entrylines.push(mousePos.x+' '+mousePos.y);
 
     if(altitude < FG.worldMap.sealevel){
-      FG.log('sea');
+      entrylines.push('sea');
     }
     else{
-      FG.log('land');
+      entrylines.push('land');
     }
 
-    FG.log('terrain: '+altitude);
+    entrylines.push('terrain: '+altitude);
 
-    FG.log('temperature: '+localTemp);
+    entrylines.push('temperature: '+localTemp);
 
-    FG.log('rain: '+localRain);
+    entrylines.push('rain: '+localRain);
+
+    FG.log(entrylines);
   };
 
   function prependChild(parent, newChild) {

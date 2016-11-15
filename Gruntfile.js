@@ -77,8 +77,8 @@ module.exports = function(grunt) {
         livereload: true
       },
       css: {
-        files: ['src/css/*.*'],
-        tasks: ['concat']
+        files: ['src/*.css'],
+        tasks: ['copy']
       },
       js: {
         files: ['src/js/**/*.js', 'src/js/**/*.html'],

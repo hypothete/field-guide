@@ -8,10 +8,28 @@ window.FG = window.FG || {};
   FG.can = document.querySelector('canvas');
   FG.ctx = FG.can.getContext('2d');
   FG.can.width = FG.can.height = 512;
-  FG.log = function(outTxt){
-    var ppp = document.createElement('p');
-    ppp.textContent = outTxt;
-    out.appendChild(ppp);
+  FG.log = function(textArray){
+    var ddd = document.createElement('div');
+    ddd.classList.add('entry');
+    for(var t=0; t<textArray.length; t++){
+      var ppp = document.createElement('p');
+      ppp.textContent = textArray[t];
+      ddd.appendChild(ppp);
+    }
+    out.appendChild(ddd);
+  };
+
+  FG.json = function(url){
+    return new Promise(function(res){
+      var jsonReq = new XMLHttpRequest();
+      jsonReq.onreadystatechange = function() {
+          if (jsonReq.readyState == XMLHttpRequest.DONE) {
+              res(JSON.parse(jsonReq.responseText));
+          }
+      };
+      jsonReq.open('GET', url);
+      jsonReq.send(null);
+    });
   };
 
 })(window.FG, window.FastSimplexNoise);
